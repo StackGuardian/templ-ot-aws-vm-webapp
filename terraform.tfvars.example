@@ -1,0 +1,12 @@
+name_prefix = "demo"
+region = "eu-central-1"
+
+tags = {
+  Owner = "your-name"
+}
+
+# Optional HTTPS. HTTP then redirects to HTTPS. DNS is not managed here.
+# certificate_arn = "arn:aws:acm:eu-central-1:123456789012:certificate/..."
+
+# Limit access to the web app, public by default.
+# allowed_http_cidrs = ["203.0.113.0/24"]
