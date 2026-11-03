@@ -219,3 +219,15 @@ run "vpc_flow_logs_are_enabled" {
     error_message = "VPC flow logs must capture all traffic."
   }
 }
+
+# U-11
+run "min_size_above_max_size_is_rejected" {
+  command = plan
+
+  variables {
+    min_size = 5
+    max_size = 4
+  }
+
+  expect_failures = [aws_autoscaling_group.web]
+}

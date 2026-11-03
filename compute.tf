@@ -140,5 +140,12 @@ resource "aws_autoscaling_group" "web" {
     }
   }
 
+  lifecycle {
+    precondition {
+      condition     = var.min_size <= var.max_size
+      error_message = "min_size must not be greater than max_size."
+    }
+  }
+
   depends_on = [aws_route_table_association.private]
 }

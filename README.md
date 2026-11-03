@@ -6,6 +6,24 @@ OpenTofu demo template. Standalone, no dependency on other repos. Compatible wit
 
 ## Architecture
 
+```mermaid
+flowchart LR
+  user([Visitor]) -->|HTTP, HTTPS optional| alb[Application Load Balancer]
+  subgraph vpc[VPC, two AZs]
+    subgraph pub[Public subnets]
+      alb
+      nat[NAT gateway]
+    end
+    subgraph priv[Private subnets]
+      asg[Auto Scaling group\nnginx instances]
+    end
+  end
+  alb -->|port 80, from ALB only| asg
+  asg -->|outbound HTTPS| nat
+  alb -->|access logs| s3[(S3 log bucket)]
+  vpc -->|flow logs| cw[(CloudWatch Logs)]
+```
+
 - VPC across two AZs: public subnets for the load balancer and NAT gateway, private subnets for the instances
 - One NAT gateway for outbound traffic (not highly available, to keep cost low)
 - Application Load Balancer with access logs to a private S3 bucket
@@ -91,8 +109,9 @@ tofu destroy
 
 ## Tests
 
-Unit tests run with mocked providers on every push and pull request. Integration tests deploy real
-resources and run manually through the `integration` workflow. They need the repository variable `AWS_ROLE_ARN` (IAM role trusted for GitHub OIDC) and optionally `AWS_REGION`.
+The GitLab pipeline (`.gitlab-ci.yml`) lints every push. Merge requests into `development` or `main` also run
+validation, the checkov scan and the unit tests. A tag runs all of these plus the integration tests, which deploy
+real resources and destroy them again, and then creates a release. Integration tests run only when the CI/CD variable `AWS_ROLE_ARN` is set: an IAM role trusted for GitLab OIDC with the audience `sts.amazonaws.com`. `AWS_REGION` is optional.
 
 ```bash
 tofu test -test-directory=tests/unit

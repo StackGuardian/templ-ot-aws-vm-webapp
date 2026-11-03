@@ -4,8 +4,8 @@ Tests use the built-in OpenTofu test framework (`tofu test`, OpenTofu 1.8 or lat
 
 | Level | Folder | What it does | Cost | When it runs |
 |---|---|---|---|---|
-| Unit | `tests/unit` | Plan only with mocked providers. Checks configuration and security settings. | None | Every push and pull request |
-| Integration | `tests/integration` | Deploys real resources, checks them, destroys them. | Cloud cost while running | Manually (GitHub Actions `integration` workflow) |
+| Unit | `tests/unit` | Plan only with mocked providers. Checks configuration and security settings. | None | Merge requests into `development` or `main`, and tags |
+| Integration | `tests/integration` | Deploys real resources, checks them, destroys them. | Cloud cost while running | Tags, when cloud credentials are set (`integration-tests` job) |
 
 ## Run locally
 
@@ -29,6 +29,7 @@ tofu test -test-directory=tests/integration   # needs cloud credentials
 | U-08 | Unit | With a certificate: HTTP redirects to HTTPS, TLS 1.2+ policy, HTTPS URL | done |
 | U-09 | Unit | Log bucket blocks public access and is encrypted | done |
 | U-10 | Unit | VPC flow logs capture all traffic | done |
+| U-11 | Unit | `min_size` above `max_size` is rejected | done |
 | I-01 | Integration | Apply waits until the instances are healthy in the target group, desired capacity is reached | done |
 | I-02 | Integration | HTTP GET on the load balancer returns 200 and the demo page | done |
 
