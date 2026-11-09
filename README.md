@@ -113,6 +113,8 @@ The GitLab pipeline (`.gitlab-ci.yml`) lints every push. Merge requests into `de
 validation, the checkov scan and the unit tests. A tag runs all of these plus the integration tests, which deploy
 real resources and destroy them again, and then creates a release. Integration tests run only when the CI/CD variable `AWS_ROLE_ARN` is set: an IAM role trusted for GitLab OIDC with the audience `sts.amazonaws.com`. `AWS_REGION` is optional.
 
+The GitHub Actions workflow (`.github/workflows/ci.yml`) runs the same jobs: every push, pull requests into `development` or `main`, and tags. Set `AWS_ROLE_ARN` (and optionally `AWS_REGION`) as repository variables; the IAM role then needs a trust for GitHub OIDC (`token.actions.githubusercontent.com`).
+
 ```bash
 tofu test -test-directory=tests/unit
 ```
