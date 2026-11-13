@@ -5,8 +5,10 @@
 
 variables {
   name_prefix = "itest"
-  tags = {
-    Purpose = "integration-test"
+  advanced_settings = {
+    tags = {
+      Purpose = "integration-test"
+    }
   }
 }
 
@@ -15,7 +17,7 @@ run "deploy" {
   command = apply
 
   assert {
-    condition     = aws_autoscaling_group.web.desired_capacity == var.min_size
+    condition     = aws_autoscaling_group.web.desired_capacity == var.advanced_settings.min_size
     error_message = "The Auto Scaling group does not have the desired capacity."
   }
 }

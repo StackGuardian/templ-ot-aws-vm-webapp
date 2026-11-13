@@ -35,9 +35,9 @@ flowchart LR
 - Instances in private subnets without public IPs. No SSH, access through SSM Session Manager
 - IMDSv2 enforced, encrypted gp3 volumes, detailed monitoring
 - Instances accept HTTP only from the load balancer security group, outbound HTTPS only
-- Load balancer drops invalid header fields. Port 80 open to `allowed_http_cidrs` (public by default)
-- Optional HTTPS with an ACM certificate (`certificate_arn`): HTTP then redirects to HTTPS, TLS policy `ELBSecurityPolicy-TLS13-1-2-2021-06`
-- Access log bucket: public access blocked, SSE-S3, TLS-only bucket policy, logs expire after `log_retention_days`
+- Load balancer drops invalid header fields. Port 80 open to `advanced_settings.allowed_http_cidrs` (public by default)
+- Optional HTTPS with an ACM certificate (`advanced_settings.certificate_arn`): HTTP then redirects to HTTPS, TLS policy `ELBSecurityPolicy-TLS13-1-2-2021-06`
+- Access log bucket: public access blocked, SSE-S3, TLS-only bucket policy, logs expire after `advanced_settings.log_retention_days`
 - Default security group without rules, VPC flow logs
 
 Accepted checkov findings (documented inline in the code):
@@ -78,15 +78,21 @@ aws ssm start-session --target <instance_id> --region <region>
 |---|---|---|
 | `name_prefix` | Prefix for all resource names | `"demo"` |
 | `region` | AWS region | `"eu-central-1"` |
-| `tags` | Additional tags for all resources | `{}` |
-| `vpc_cidr` | CIDR block of the VPC | `"10.0.0.0/16"` |
 | `instance_type` | EC2 instance type (x86_64) | `"t3.micro"` |
+| `advanced_settings` | Object with the settings below, all optional | `{}` |
+
+`advanced_settings` attributes (shown as "Advanced Settings" in the StackGuardian form):
+
+| Name | Description | Default |
+|---|---|---|
+| `vpc_cidr` | CIDR block of the VPC | `"10.0.0.0/16"` |
 | `min_size` | Minimum (and desired) number of instances | `2` |
 | `max_size` | Maximum number of instances | `4` |
 | `allowed_http_cidrs` | CIDRs allowed to reach the load balancer | `["0.0.0.0/0"]` |
 | `certificate_arn` | Optional ACM certificate for HTTPS | `null` |
 | `deletion_protection` | Protect the load balancer from deletion | `false` |
 | `log_retention_days` | Retention of access and flow logs | `90` |
+| `tags` | Additional tags for all resources | `{}` |
 
 ## Outputs
 

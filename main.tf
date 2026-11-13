@@ -6,6 +6,6 @@ locals {
       ManagedBy   = "opentofu"
       Repository  = "tf-aws-vm-webapp"
     },
-    var.tags,
+    var.advanced_settings.tags,
   )
 }

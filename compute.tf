@@ -106,16 +106,16 @@ resource "aws_launch_template" "web" {
 
 resource "aws_autoscaling_group" "web" {
   name                      = "${var.name_prefix}-web"
-  min_size                  = var.min_size
-  max_size                  = var.max_size
-  desired_capacity          = var.min_size
+  min_size                  = var.advanced_settings.min_size
+  max_size                  = var.advanced_settings.max_size
+  desired_capacity          = var.advanced_settings.min_size
   vpc_zone_identifier       = aws_subnet.private[*].id
   target_group_arns         = [aws_lb_target_group.web.arn]
   health_check_type         = "ELB"
   health_check_grace_period = 120
 
   # Apply waits until the instances are healthy behind the load balancer.
-  wait_for_elb_capacity = var.min_size
+  wait_for_elb_capacity = var.advanced_settings.min_size
 
   launch_template {
     id      = aws_launch_template.web.id
@@ -142,7 +142,7 @@ resource "aws_autoscaling_group" "web" {
 
   lifecycle {
     precondition {
-      condition     = var.min_size <= var.max_size
+      condition     = var.advanced_settings.min_size <= var.advanced_settings.max_size
       error_message = "min_size must not be greater than max_size."
     }
   }

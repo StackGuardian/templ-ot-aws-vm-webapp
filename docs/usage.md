@@ -22,17 +22,22 @@ Use it to show a classic, highly available web tier on virtual machines.
 
 | Field | What it does | Default |
 |---|---|---|
-| Name prefix | Prefix for all resource names. 2 to 16 lowercase letters, digits or hyphens, starting with a letter | `demo` |
+| Name Prefix | Prefix for all resource names. 2 to 16 lowercase letters, digits or hyphens, starting with a letter | `demo` |
 | Region | AWS region | `eu-central-1` |
+| Instance Type | Size of each server (x86_64). The list has general-purpose and burstable types | `t3.micro` (2 vCPU, 1 GiB) |
+
+**Advanced settings** (tick "Show advanced settings" to change them):
+
+| Field | What it does | Default |
+|---|---|---|
+| VPC CIDR | IP range of the new network | `10.0.0.0/16` |
+| Min Size | Smallest number of servers, 1 to 10. Also the number started at first | `2` |
+| Max Size | Largest number of servers, 1 to 20. Must not be below Min Size | `4` |
+| Allowed HTTP CIDRs | IP ranges that may reach the web app. Public by default | `0.0.0.0/0` |
+| Certificate ARN | Optional ACM certificate. With it, the app is served over HTTPS and HTTP redirects to HTTPS | empty |
+| Deletion Protection | Protects the load balancer from deletion. Keep it off for demos | off |
+| Log Retention Days | How long access logs and flow logs are kept. CloudWatch Logs allows only fixed values | `90` |
 | Tags | Extra tags added to all resources | none |
-| VPC cidr | IP range of the new network | `10.0.0.0/16` |
-| Instance type | Size of each server (x86_64) | `t3.micro` |
-| Min size | Smallest number of servers | `2` |
-| Max size | Largest number of servers | `4` |
-| Allowed http cidrs | IP ranges that may reach the web app. Public by default | `0.0.0.0/0` |
-| Certificate arn | Optional ACM certificate. With it, the app is served over HTTPS and HTTP redirects to HTTPS | empty |
-| Deletion protection | Protects the load balancer from deletion. Keep it off for demos | off |
-| Log retention days | How long access logs and flow logs are kept | `90` |
 
 For a quick demo, keep all defaults.
 

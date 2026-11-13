@@ -1,5 +1,5 @@
 locals {
-  https = var.certificate_arn != null
+  https = var.advanced_settings.certificate_arn != null
 }
 
 resource "aws_security_group" "alb" {
@@ -11,7 +11,7 @@ resource "aws_security_group" "alb" {
 resource "aws_vpc_security_group_ingress_rule" "alb" {
   #checkov:skip=CKV_AWS_260:The web app is public, port 80 is needed (redirects to HTTPS when a certificate is set)
   for_each = {
-    for pair in setproduct(var.allowed_http_cidrs, local.https ? [80, 443] : [80]) :
+    for pair in setproduct(var.advanced_settings.allowed_http_cidrs, local.https ? [80, 443] : [80]) :
     "${pair[0]}-${pair[1]}" => { cidr = pair[0], port = pair[1] }
   }
 
@@ -41,7 +41,7 @@ resource "aws_lb" "this" {
   security_groups            = [aws_security_group.alb.id]
   subnets                    = aws_subnet.public[*].id
   drop_invalid_header_fields = true
-  enable_deletion_protection = var.deletion_protection
+  enable_deletion_protection = var.advanced_settings.deletion_protection
 
   access_logs {
     bucket  = aws_s3_bucket.alb_logs.id
@@ -93,7 +93,7 @@ resource "aws_lb_listener" "https" {
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-  certificate_arn   = var.certificate_arn
+  certificate_arn   = var.advanced_settings.certificate_arn
 
   default_action {
     type             = "forward"
@@ -150,7 +150,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "alb_logs" {
     filter {}
 
     expiration {
-      days = var.log_retention_days
+      days = var.advanced_settings.log_retention_days
     }
 
     abort_incomplete_multipart_upload {

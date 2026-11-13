@@ -1,15 +1,62 @@
 {
+  "name_prefix": {
+    "ui:title": "Name Prefix",
+    "ui:description": "Prefix for all resource names"
+  },
+  "region": {
+    "ui:title": "Region",
+    "ui:description": "AWS region"
+  },
+  "instance_type": {
+    "ui:title": "Instance Type",
+    "ui:description": "EC2 instance type (x86_64)"
+  },
+  "advanced_settings": {
+    "show_advanced_settings": {
+      "ui:title": "Show advanced settings"
+    },
+    "vpc_cidr": {
+      "ui:title": "VPC CIDR"
+    },
+    "min_size": {
+      "ui:title": "Min Size"
+    },
+    "max_size": {
+      "ui:title": "Max Size"
+    },
+    "allowed_http_cidrs": {
+      "ui:title": "Allowed HTTP CIDRs"
+    },
+    "certificate_arn": {
+      "ui:title": "Certificate ARN"
+    },
+    "deletion_protection": {
+      "ui:title": "Deletion Protection"
+    },
+    "log_retention_days": {
+      "ui:title": "Log Retention Days"
+    },
+    "tags": {
+      "ui:title": "Tags"
+    },
+    "ui:order": [
+      "show_advanced_settings",
+      "vpc_cidr",
+      "min_size",
+      "max_size",
+      "allowed_http_cidrs",
+      "certificate_arn",
+      "deletion_protection",
+      "log_retention_days",
+      "tags"
+    ],
+    "ui:title": "Advanced Settings",
+    "ui:description": "Optional settings, most deployments keep the defaults"
+  },
   "ui:order": [
     "name_prefix",
     "region",
-    "vpc_cidr",
     "instance_type",
-    "min_size",
-    "max_size",
-    "allowed_http_cidrs",
-    "certificate_arn",
-    "deletion_protection",
-    "log_retention_days",
-    "tags"
+    "advanced_settings"
   ]
 }

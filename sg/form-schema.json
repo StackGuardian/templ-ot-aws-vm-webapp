@@ -3,103 +3,272 @@
   "required": [],
   "properties": {
     "name_prefix": {
-      "title": "Name prefix",
       "type": "string",
-      "description": "Prefix for all resource names",
       "default": "demo",
       "pattern": "^[a-z][a-z0-9-]{1,15}$"
     },
     "region": {
-      "title": "Region",
       "type": "string",
-      "description": "AWS region",
-      "default": "eu-central-1"
-    },
-    "tags": {
-      "title": "Tags",
-      "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      },
-      "description": "Additional tags for all resources",
-      "default": {}
-    },
-    "vpc_cidr": {
-      "title": "VPC cidr",
-      "type": "string",
-      "description": "CIDR block of the VPC",
-      "default": "10.0.0.0/16"
+      "default": "eu-central-1",
+      "enum": [
+        "af-south-1",
+        "ap-east-1",
+        "ap-south-2",
+        "ap-southeast-3",
+        "ap-southeast-5",
+        "ap-southeast-4",
+        "ap-south-1",
+        "ap-southeast-6",
+        "ap-northeast-3",
+        "ap-northeast-2",
+        "ap-southeast-1",
+        "ap-southeast-2",
+        "ap-east-2",
+        "ap-southeast-7",
+        "ap-northeast-1",
+        "ca-central-1",
+        "ca-west-1",
+        "eu-central-1",
+        "eu-west-1",
+        "eu-west-2",
+        "eu-south-1",
+        "eu-west-3",
+        "eu-south-2",
+        "eu-north-1",
+        "eu-central-2",
+        "il-central-1",
+        "mx-central-1",
+        "me-south-1",
+        "me-central-1",
+        "sa-east-1",
+        "us-east-1",
+        "us-east-2",
+        "us-west-1",
+        "us-west-2"
+      ],
+      "enumNames": [
+        "Africa (Cape Town) (af-south-1)",
+        "Asia Pacific (Hong Kong) (ap-east-1)",
+        "Asia Pacific (Hyderabad) (ap-south-2)",
+        "Asia Pacific (Jakarta) (ap-southeast-3)",
+        "Asia Pacific (Malaysia) (ap-southeast-5)",
+        "Asia Pacific (Melbourne) (ap-southeast-4)",
+        "Asia Pacific (Mumbai) (ap-south-1)",
+        "Asia Pacific (New Zealand) (ap-southeast-6)",
+        "Asia Pacific (Osaka) (ap-northeast-3)",
+        "Asia Pacific (Seoul) (ap-northeast-2)",
+        "Asia Pacific (Singapore) (ap-southeast-1)",
+        "Asia Pacific (Sydney) (ap-southeast-2)",
+        "Asia Pacific (Taipei) (ap-east-2)",
+        "Asia Pacific (Thailand) (ap-southeast-7)",
+        "Asia Pacific (Tokyo) (ap-northeast-1)",
+        "Canada (Central) (ca-central-1)",
+        "Canada West (Calgary) (ca-west-1)",
+        "Europe (Frankfurt) (eu-central-1)",
+        "Europe (Ireland) (eu-west-1)",
+        "Europe (London) (eu-west-2)",
+        "Europe (Milan) (eu-south-1)",
+        "Europe (Paris) (eu-west-3)",
+        "Europe (Spain) (eu-south-2)",
+        "Europe (Stockholm) (eu-north-1)",
+        "Europe (Zurich) (eu-central-2)",
+        "Israel (Tel Aviv) (il-central-1)",
+        "Mexico (Central) (mx-central-1)",
+        "Middle East (Bahrain) (me-south-1)",
+        "Middle East (UAE) (me-central-1)",
+        "South America (S\u00e3o Paulo) (sa-east-1)",
+        "US East (N. Virginia) (us-east-1)",
+        "US East (Ohio) (us-east-2)",
+        "US West (N. California) (us-west-1)",
+        "US West (Oregon) (us-west-2)"
+      ]
     },
     "instance_type": {
-      "title": "Instance type",
       "type": "string",
-      "description": "EC2 instance type (x86_64)",
-      "default": "t3.micro"
-    },
-    "min_size": {
-      "title": "Min size",
-      "type": "number",
-      "description": "Minimum number of instances",
-      "default": 2
-    },
-    "max_size": {
-      "title": "Max size",
-      "type": "number",
-      "description": "Maximum number of instances",
-      "default": 4
-    },
-    "allowed_http_cidrs": {
-      "title": "Allowed http cidrs",
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "IPv4 CIDRs allowed to reach the load balancer. The web app is public by default.",
-      "default": [
-        "0.0.0.0/0"
-      ]
-    },
-    "certificate_arn": {
-      "title": "Certificate arn",
-      "type": "string",
-      "description": "Optional ACM certificate for HTTPS on the load balancer. Without it the app is served over HTTP only."
-    },
-    "deletion_protection": {
-      "title": "Deletion protection",
-      "type": "boolean",
-      "description": "Protect the load balancer from deletion. Off by default so the demo can be destroyed.",
-      "default": false
-    },
-    "log_retention_days": {
-      "title": "Log retention days",
-      "type": "number",
-      "description": "Retention of load balancer access logs and VPC flow logs",
-      "default": 90,
+      "default": "t3.micro",
       "enum": [
-        1,
-        3,
-        5,
-        7,
-        14,
-        30,
-        60,
-        90,
-        120,
-        150,
-        180,
-        365,
-        400,
-        545,
-        731,
-        1096,
-        1827,
-        2192,
-        2557,
-        2922,
-        3288,
-        3653
+        "t3.micro",
+        "t3.small",
+        "t3.medium",
+        "t3.large",
+        "t3a.small",
+        "t3a.medium",
+        "t3a.large",
+        "m5.large",
+        "m6i.large",
+        "m6i.xlarge",
+        "m6a.large",
+        "m7i.large",
+        "m7i.xlarge",
+        "m7a.large"
+      ],
+      "enumNames": [
+        "t3.micro (2 vCPU, 1 GiB)",
+        "t3.small (2 vCPU, 2 GiB)",
+        "t3.medium (2 vCPU, 4 GiB)",
+        "t3.large (2 vCPU, 8 GiB)",
+        "t3a.small (2 vCPU, 2 GiB)",
+        "t3a.medium (2 vCPU, 4 GiB)",
+        "t3a.large (2 vCPU, 8 GiB)",
+        "m5.large (2 vCPU, 8 GiB)",
+        "m6i.large (2 vCPU, 8 GiB)",
+        "m6i.xlarge (4 vCPU, 16 GiB)",
+        "m6a.large (2 vCPU, 8 GiB)",
+        "m7i.large (2 vCPU, 8 GiB)",
+        "m7i.xlarge (4 vCPU, 16 GiB)",
+        "m7a.large (2 vCPU, 8 GiB)"
       ]
+    },
+    "advanced_settings": {
+      "type": "object",
+      "properties": {
+        "show_advanced_settings": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "dependencies": {
+        "show_advanced_settings": {
+          "oneOf": [
+            {
+              "properties": {
+                "show_advanced_settings": {
+                  "enum": [
+                    false
+                  ]
+                }
+              },
+              "required": []
+            },
+            {
+              "properties": {
+                "show_advanced_settings": {
+                  "enum": [
+                    true
+                  ]
+                },
+                "vpc_cidr": {
+                  "title": "VPC cidr",
+                  "type": "string",
+                  "description": "CIDR block of the VPC",
+                  "default": "10.0.0.0/16"
+                },
+                "min_size": {
+                  "title": "Min size",
+                  "type": "number",
+                  "description": "Minimum number of instances",
+                  "default": 2,
+                  "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10
+                  ]
+                },
+                "max_size": {
+                  "title": "Max size",
+                  "type": "number",
+                  "description": "Maximum number of instances",
+                  "default": 4,
+                  "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16,
+                    17,
+                    18,
+                    19,
+                    20
+                  ]
+                },
+                "allowed_http_cidrs": {
+                  "title": "Allowed http cidrs",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "IPv4 CIDRs allowed to reach the load balancer. The web app is public by default.",
+                  "default": [
+                    "0.0.0.0/0"
+                  ]
+                },
+                "certificate_arn": {
+                  "title": "Certificate arn",
+                  "type": "string",
+                  "description": "Optional ACM certificate for HTTPS on the load balancer. Without it the app is served over HTTP only."
+                },
+                "deletion_protection": {
+                  "title": "Deletion protection",
+                  "type": "boolean",
+                  "description": "Protect the load balancer from deletion. Off by default so the demo can be destroyed.",
+                  "default": false
+                },
+                "log_retention_days": {
+                  "title": "Log retention days",
+                  "type": "number",
+                  "description": "Retention of load balancer access logs and VPC flow logs",
+                  "default": 90,
+                  "enum": [
+                    1,
+                    3,
+                    5,
+                    7,
+                    14,
+                    30,
+                    60,
+                    90,
+                    120,
+                    150,
+                    180,
+                    365,
+                    400,
+                    545,
+                    731,
+                    1096,
+                    1827,
+                    2192,
+                    2557,
+                    2922,
+                    3288,
+                    3653
+                  ]
+                },
+                "tags": {
+                  "title": "Tags",
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "Additional tags for all resources",
+                  "default": {}
+                }
+              },
+              "required": []
+            }
+          ]
+        }
+      },
+      "required": []
     }
   },
-  "title": "AWS Web App on VMs (Auto Scaling + ALB)"
+  "title": "AWS Web App on VMs (Auto Scaling + ALB)",
+  "dependencies": {}
 }

@@ -92,8 +92,10 @@ run "custom_tags_are_merged" {
   command = plan
 
   variables {
-    tags = {
-      Owner = "tester"
+    advanced_settings = {
+      tags = {
+        Owner = "tester"
+      }
     }
   }
 
@@ -171,7 +173,9 @@ run "https_redirect_with_certificate" {
   command = apply
 
   variables {
-    certificate_arn = "arn:aws:acm:eu-central-1:123456789012:certificate/mock"
+    advanced_settings = {
+      certificate_arn = "arn:aws:acm:eu-central-1:123456789012:certificate/mock"
+    }
   }
 
   assert {
@@ -225,8 +229,10 @@ run "min_size_above_max_size_is_rejected" {
   command = plan
 
   variables {
-    min_size = 5
-    max_size = 4
+    advanced_settings = {
+      min_size = 5
+      max_size = 4
+    }
   }
 
   expect_failures = [aws_autoscaling_group.web]
