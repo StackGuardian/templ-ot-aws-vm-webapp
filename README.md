@@ -48,6 +48,7 @@ Accepted checkov findings (documented inline in the code):
 | CKV_AWS_150 | Deletion protection is configurable, off by default so the demo can be destroyed |
 | CKV_AWS_260 | The web app is public on port 80; flagged on the instance rule as a false positive (source is the load balancer security group) |
 | CKV_AWS_378 | TLS ends at the load balancer, traffic to the instances stays inside the VPC |
+| CKV_AWS_2 | The listener redirects to HTTPS when a certificate is set. Without a certificate the demo serves plain HTTP on purpose |
 | CKV_AWS_18, CKV_AWS_21, CKV_AWS_144, CKV_AWS_145, CKV2_AWS_62 | Log bucket: it is the log bucket itself, logs are written once, ALB supports only SSE-S3, no replication or events needed |
 | CKV_AWS_338, CKV_AWS_158 | Flow log retention is configurable, AWS-managed encryption |
 | CKV_AWS_394 | Only the first two zones are used |
@@ -118,6 +119,8 @@ tofu destroy
 The GitLab pipeline (`.gitlab-ci.yml`) lints every push. Merge requests into `development` or `main` also run
 validation, the checkov scan and the unit tests. A tag runs all of these plus the integration tests, which deploy
 real resources and destroy them again, and then creates a release. Integration tests run only when the CI/CD variable `AWS_ROLE_ARN` is set: an IAM role trusted for GitLab OIDC with the audience `sts.amazonaws.com`. `AWS_REGION` is optional.
+
+In GitLab, the `unit-tests` job also publishes its results as a JUnit test report, which you find in the **Tests** tab of the pipeline and of the merge request. The script `ci/tofu-json-to-junit.py` converts the output of `tofu test -json` to JUnit XML.
 
 The GitHub Actions workflow (`.github/workflows/ci.yml`) runs the same jobs: every push, pull requests into `development` or `main`, and tags. Set `AWS_ROLE_ARN` (and optionally `AWS_REGION`) as repository variables; the IAM role then needs a trust for GitHub OIDC (`token.actions.githubusercontent.com`).
 
