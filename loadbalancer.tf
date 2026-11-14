@@ -32,6 +32,7 @@ resource "aws_vpc_security_group_egress_rule" "alb_to_instances" {
   to_port                      = 80
 }
 
+#trivy:ignore:AVD-AWS-0053 The web app is public by design
 resource "aws_lb" "this" {
   #checkov:skip=CKV2_AWS_28:WAF is out of scope for the demo (cost)
   #checkov:skip=CKV_AWS_150:Deletion protection is configurable, off by default so the demo can be destroyed
@@ -65,6 +66,7 @@ resource "aws_lb_target_group" "web" {
 }
 
 # Without a certificate: serve HTTP. With a certificate: redirect HTTP to HTTPS.
+#trivy:ignore:AVD-AWS-0054 Redirects to HTTPS when a certificate is set, without a certificate the demo serves plain HTTP on purpose
 resource "aws_lb_listener" "http" {
   #checkov:skip=CKV_AWS_2:Redirects to HTTPS when a certificate is set. Without a certificate the demo serves plain HTTP on purpose.
   load_balancer_arn = aws_lb.this.arn
@@ -105,6 +107,8 @@ resource "aws_lb_listener" "https" {
 # Access logs. ALB supports only SSE-S3 for its log bucket.
 data "aws_elb_service_account" "this" {}
 
+#trivy:ignore:AVD-AWS-0089 This is the log bucket itself
+#trivy:ignore:AVD-AWS-0090 Log files are written once, versioning is not needed
 resource "aws_s3_bucket" "alb_logs" {
   #checkov:skip=CKV_AWS_18:This is the log bucket itself
   #checkov:skip=CKV_AWS_144:Cross-region replication is out of scope for the demo
@@ -131,6 +135,7 @@ resource "aws_s3_bucket_ownership_controls" "alb_logs" {
   }
 }
 
+#trivy:ignore:AVD-AWS-0132 ALB access logs support only SSE-S3
 resource "aws_s3_bucket_server_side_encryption_configuration" "alb_logs" {
   bucket = aws_s3_bucket.alb_logs.id
 
