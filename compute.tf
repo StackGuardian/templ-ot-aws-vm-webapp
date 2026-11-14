@@ -48,6 +48,7 @@ resource "aws_vpc_security_group_ingress_rule" "instance_from_alb" {
 }
 
 # Outbound HTTPS only, for package installs and SSM.
+#trivy:ignore:AVD-AWS-0104 Outbound is limited to HTTPS (port 443), needed for SSM and package updates
 resource "aws_vpc_security_group_egress_rule" "instance_https" {
   security_group_id = aws_security_group.instance.id
   description       = "HTTPS outbound"

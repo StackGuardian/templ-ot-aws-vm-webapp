@@ -53,6 +53,8 @@ Accepted checkov findings (documented inline in the code):
 | CKV_AWS_338, CKV_AWS_158 | Flow log retention is configurable, AWS-managed encryption |
 | CKV_AWS_394 | Only the first two zones are used |
 
+The Trivy scan (`trivy config`) accepts findings with `#trivy:ignore` comments above the resource. The reason is written in the same line.
+
 ## Usage
 
 Configure AWS credentials, for example with `aws configure sso` or environment variables.
@@ -117,7 +119,7 @@ tofu destroy
 ## Tests
 
 The GitLab pipeline (`.gitlab-ci.yml`) lints every push. Merge requests into `development` or `main` also run
-validation, the checkov scan and the unit tests. A tag runs all of these plus the integration tests, which deploy
+validation, the checkov and Trivy scans and the unit tests. A tag runs all of these plus the integration tests, which deploy
 real resources and destroy them again, and then creates a release. Integration tests run only when the CI/CD variable `AWS_ROLE_ARN` is set: an IAM role trusted for GitLab OIDC with the audience `sts.amazonaws.com`. `AWS_REGION` is optional.
 
 In GitLab, the `unit-tests` job also publishes its results as a JUnit test report, which you find in the **Tests** tab of the pipeline and of the merge request. The script `ci/tofu-json-to-junit.py` converts the output of `tofu test -json` to JUnit XML.
