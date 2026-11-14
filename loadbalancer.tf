@@ -66,6 +66,7 @@ resource "aws_lb_target_group" "web" {
 
 # Without a certificate: serve HTTP. With a certificate: redirect HTTP to HTTPS.
 resource "aws_lb_listener" "http" {
+  #checkov:skip=CKV_AWS_2:Redirects to HTTPS when a certificate is set. Without a certificate the demo serves plain HTTP on purpose.
   load_balancer_arn = aws_lb.this.arn
   port              = 80
   protocol          = "HTTP"
