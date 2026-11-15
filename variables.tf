@@ -43,8 +43,13 @@ variable "advanced_settings" {
   }
 
   validation {
-    condition     = var.advanced_settings.min_size >= 1
-    error_message = "At least one instance is needed."
+    condition     = var.advanced_settings.min_size >= 1 && var.advanced_settings.min_size <= 10
+    error_message = "min_size must be between 1 and 10."
+  }
+
+  validation {
+    condition     = var.advanced_settings.max_size >= 1 && var.advanced_settings.max_size <= 20
+    error_message = "max_size must be between 1 and 20."
   }
 
   validation {

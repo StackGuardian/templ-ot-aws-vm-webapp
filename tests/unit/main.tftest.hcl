@@ -237,3 +237,17 @@ run "min_size_above_max_size_is_rejected" {
 
   expect_failures = [aws_autoscaling_group.web]
 }
+
+# U-12
+run "min_and_max_size_outside_the_form_ranges_are_rejected" {
+  command = plan
+
+  variables {
+    advanced_settings = {
+      min_size = 11
+      max_size = 21
+    }
+  }
+
+  expect_failures = [var.advanced_settings]
+}
