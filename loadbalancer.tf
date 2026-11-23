@@ -1,5 +1,5 @@
 locals {
-  https = var.advanced_settings.certificate_arn != null
+  https = local.certificate_arn != null
 }
 
 resource "aws_security_group" "alb" {
@@ -96,7 +96,7 @@ resource "aws_lb_listener" "https" {
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-  certificate_arn   = var.advanced_settings.certificate_arn
+  certificate_arn   = local.certificate_arn
 
   default_action {
     type             = "forward"

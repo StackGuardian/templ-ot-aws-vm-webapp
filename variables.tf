@@ -58,7 +58,7 @@ variable "advanced_settings" {
   }
 
   validation {
-    condition     = var.advanced_settings.certificate_arn == null || can(regex("^arn:aws[a-z-]*:acm:", var.advanced_settings.certificate_arn))
+    condition     = var.advanced_settings.certificate_arn == null || var.advanced_settings.certificate_arn == "" || can(regex("^arn:aws[a-z-]*:acm:", var.advanced_settings.certificate_arn))
     error_message = "Must be an ACM certificate ARN."
   }
 

@@ -51,7 +51,7 @@ Accepted checkov findings (documented inline in the code):
 | CKV_AWS_2 | The listener redirects to HTTPS when a certificate is set. Without a certificate the demo serves plain HTTP on purpose |
 | CKV_AWS_18, CKV_AWS_21, CKV_AWS_144, CKV_AWS_145, CKV2_AWS_62 | Log bucket: it is the log bucket itself, logs are written once, ALB supports only SSE-S3, no replication or events needed |
 | CKV_AWS_338, CKV_AWS_158 | Flow log retention is configurable, AWS-managed encryption |
-| CKV_AWS_394 | Only the first two zones are used |
+| CKV_AWS_394 | Only the first two zones that offer the instance type are used |
 
 The Trivy scan (`trivy config`) accepts findings with `#trivy:ignore` comments above the resource. The reason is written in the same line.
 

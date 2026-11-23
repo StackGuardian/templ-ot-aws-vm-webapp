@@ -65,6 +65,13 @@ resource "aws_launch_template" "web" {
   ebs_optimized = true
   user_data     = filebase64("${path.module}/user-data.sh")
 
+  # The image is picked once, when the launch template is created. Without this, every
+  # new Amazon Linux release would change image_id and start a rolling replacement of
+  # all instances on the next run.
+  lifecycle {
+    ignore_changes = [image_id]
+  }
+
   iam_instance_profile {
     arn = aws_iam_instance_profile.instance.arn
   }
@@ -142,6 +149,11 @@ resource "aws_autoscaling_group" "web" {
   }
 
   lifecycle {
+    precondition {
+      condition     = length(local.azs) == 2
+      error_message = "Fewer than two availability zones in this region offer the instance type. Pick another instance type or region."
+    }
+
     precondition {
       condition     = var.advanced_settings.min_size <= var.advanced_settings.max_size
       error_message = "min_size must not be greater than max_size."

@@ -15,7 +15,7 @@ Use it to show a classic, highly available web tier on virtual machines.
 ## Before you start
 
 - A workflow with an AWS cloud connector for the target account
-- Permissions to create VPC, EC2, Auto Scaling, load balancer, S3, IAM and CloudWatch Logs resources
+- Permissions to create VPC, EC2, Auto Scaling, load balancer, S3, IAM and CloudWatch Logs resources. This includes `iam:PassRole` for the instance profile and the flow log role, and `ec2:DescribeInstanceTypeOfferings`, which the run uses to pick zones that offer your instance type
 - For HTTPS only: an ACM certificate in the same region
 
 ## Form fields
@@ -63,6 +63,9 @@ The run waits until the servers are healthy behind the load balancer, which take
 The load balancer, the NAT gateway and the servers are billed per hour, also when idle. Destroy the resources from the workflow when the demo is over.
 
 ## Limits
+
+- The server image is chosen once, when the deployment is created. A later run does not replace the servers when Amazon publishes a newer image. To move to a newer image, destroy the deployment and deploy it again
+- The two zones are the first two in the region that offer your instance type. If fewer than two do, the run stops with a message before anything is created
 
 - One NAT gateway, so outbound traffic is not highly available
 - No WAF

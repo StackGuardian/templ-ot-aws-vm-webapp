@@ -34,6 +34,10 @@ tofu test -test-directory=tests/integration   # needs cloud credentials
 | U-11 | Unit | `advanced_settings.min_size` above `advanced_settings.max_size` is rejected | done |
 | U-12 | Unit | `advanced_settings.min_size` above 10 and `max_size` above 20 are rejected | done |
 | U-13 | Unit | The log bucket policy uses the log delivery service principal (works in all regions), limited to this account's `AWSLogs` path | done |
+| U-14 | Unit | An empty `advanced_settings.certificate_arn` creates no HTTPS listener | done |
+| U-15 | Unit | The subnets are in the first two zones that offer the instance type, and an instance type offered in fewer than two zones is rejected | done |
+| U-16 | Unit | A newer Amazon Linux AMI does not change the launch template (no rolling replacement on a later run) | done |
+| U-17 | Unit | The flow log role can only be assumed for flow logs of this account | done |
 | I-01 | Integration | Apply waits until the instances are healthy in the target group, desired capacity is reached | done |
 | I-02 | Integration | HTTP GET on the load balancer returns 200 and the demo page | done |
 
