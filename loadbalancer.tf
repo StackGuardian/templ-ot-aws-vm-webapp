@@ -105,7 +105,7 @@ resource "aws_lb_listener" "https" {
 }
 
 # Access logs. ALB supports only SSE-S3 for its log bucket.
-data "aws_elb_service_account" "this" {}
+data "aws_caller_identity" "current" {}
 
 #trivy:ignore:AVD-AWS-0089 This is the log bucket itself
 #trivy:ignore:AVD-AWS-0090 Log files are written once, versioning is not needed
@@ -172,11 +172,14 @@ resource "aws_s3_bucket_policy" "alb_logs" {
     Version = "2012-10-17"
     Statement = [
       {
+        # The log delivery service principal works in every region. The legacy
+        # per-region ELB account (aws_elb_service_account) exists only in regions
+        # launched before August 2022, so the plan failed in newer regions.
         Sid       = "AllowAlbLogDelivery"
         Effect    = "Allow"
-        Principal = { AWS = data.aws_elb_service_account.this.arn }
+        Principal = { Service = "logdelivery.elasticloadbalancing.amazonaws.com" }
         Action    = "s3:PutObject"
-        Resource  = "${aws_s3_bucket.alb_logs.arn}/*"
+        Resource  = "${aws_s3_bucket.alb_logs.arn}/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
       },
       {
         Sid       = "DenyInsecureTransport"

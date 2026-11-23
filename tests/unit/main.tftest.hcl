@@ -9,9 +9,9 @@ mock_provider "aws" {
     }
   }
 
-  mock_data "aws_elb_service_account" {
+  mock_data "aws_caller_identity" {
     defaults = {
-      arn = "arn:aws:iam::054676820928:root"
+      account_id = "123456789012"
     }
   }
 
@@ -250,4 +250,17 @@ run "min_and_max_size_outside_the_form_ranges_are_rejected" {
   }
 
   expect_failures = [var.advanced_settings]
+}
+
+# U-13
+run "alb_log_delivery_works_in_every_region" {
+  command = apply
+
+  assert {
+    condition = (
+      jsondecode(aws_s3_bucket_policy.alb_logs.policy).Statement[0].Principal.Service == "logdelivery.elasticloadbalancing.amazonaws.com" &&
+      endswith(jsondecode(aws_s3_bucket_policy.alb_logs.policy).Statement[0].Resource, "/AWSLogs/123456789012/*")
+    )
+    error_message = "The log bucket policy must grant the log delivery service principal, limited to this account's log path. The legacy ELB account does not exist in newer regions."
+  }
 }
