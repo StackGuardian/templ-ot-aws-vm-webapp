@@ -33,6 +33,7 @@ tofu test -test-directory=tests/integration   # needs cloud credentials
 | U-10 | Unit | VPC flow logs capture all traffic | done |
 | U-11 | Unit | `advanced_settings.min_size` above `advanced_settings.max_size` is rejected | done |
 | U-12 | Unit | `advanced_settings.min_size` above 10 and `max_size` above 20 are rejected | done |
+| U-13 | Unit | The log bucket policy uses the log delivery service principal (works in all regions), limited to this account's `AWSLogs` path | done |
 | I-01 | Integration | Apply waits until the instances are healthy in the target group, desired capacity is reached | done |
 | I-02 | Integration | HTTP GET on the load balancer returns 200 and the demo page | done |
 
