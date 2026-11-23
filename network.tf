@@ -1,6 +1,16 @@
 data "aws_availability_zones" "available" {
-  #checkov:skip=CKV_AWS_394:Only the first two zones are used
+  #checkov:skip=CKV_AWS_394:Only the first two zones that offer the instance type are used
   state = "available"
+}
+
+# Not every zone offers every instance type, so the zones are picked from this list (local.azs).
+data "aws_ec2_instance_type_offerings" "this" {
+  location_type = "availability-zone"
+
+  filter {
+    name   = "instance-type"
+    values = [var.instance_type]
+  }
 }
 
 resource "aws_vpc" "this" {
@@ -22,7 +32,7 @@ resource "aws_subnet" "public" {
 
   vpc_id                  = aws_vpc.this.id
   cidr_block              = cidrsubnet(var.advanced_settings.vpc_cidr, 8, count.index)
-  availability_zone       = data.aws_availability_zones.available.names[count.index]
+  availability_zone       = try(local.azs[count.index], null)
   map_public_ip_on_launch = false
 
   tags = { Name = "${var.name_prefix}-public-${count.index}" }
@@ -33,7 +43,7 @@ resource "aws_subnet" "private" {
 
   vpc_id                  = aws_vpc.this.id
   cidr_block              = cidrsubnet(var.advanced_settings.vpc_cidr, 8, count.index + 10)
-  availability_zone       = data.aws_availability_zones.available.names[count.index]
+  availability_zone       = try(local.azs[count.index], null)
   map_public_ip_on_launch = false
 
   tags = { Name = "${var.name_prefix}-private-${count.index}" }
@@ -115,6 +125,11 @@ resource "aws_iam_role" "flow_logs" {
       Effect    = "Allow"
       Principal = { Service = "vpc-flow-logs.amazonaws.com" }
       Action    = "sts:AssumeRole"
+      # Confused deputy protection: only flow logs of this account may use the role.
+      Condition = {
+        StringEquals = { "aws:SourceAccount" = data.aws_caller_identity.current.account_id }
+        ArnLike      = { "aws:SourceArn" = "arn:aws:ec2:${var.region}:${data.aws_caller_identity.current.account_id}:vpc-flow-log/*" }
+      }
     }]
   })
 }

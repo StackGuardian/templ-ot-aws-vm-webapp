@@ -9,6 +9,12 @@ mock_provider "aws" {
     }
   }
 
+  mock_data "aws_ec2_instance_type_offerings" {
+    defaults = {
+      locations = ["eu-central-1a", "eu-central-1b"]
+    }
+  }
+
   mock_data "aws_caller_identity" {
     defaults = {
       account_id = "123456789012"
@@ -262,5 +268,99 @@ run "alb_log_delivery_works_in_every_region" {
       endswith(jsondecode(aws_s3_bucket_policy.alb_logs.policy).Statement[0].Resource, "/AWSLogs/123456789012/*")
     )
     error_message = "The log bucket policy must grant the log delivery service principal, limited to this account's log path. The legacy ELB account does not exist in newer regions."
+  }
+}
+
+# U-14
+run "empty_certificate_means_http_only" {
+  command = plan
+
+  variables {
+    advanced_settings = {
+      certificate_arn = ""
+    }
+  }
+
+  assert {
+    condition     = length(aws_lb_listener.https) == 0
+    error_message = "An empty certificate field must not create an HTTPS listener."
+  }
+}
+
+# U-15
+run "zones_are_the_first_two_that_offer_the_instance_type" {
+  command = plan
+
+  override_data {
+    target = data.aws_availability_zones.available
+    values = {
+      names = ["eu-central-1a", "eu-central-1b", "eu-central-1c"]
+    }
+  }
+
+  override_data {
+    target = data.aws_ec2_instance_type_offerings.this
+    values = {
+      locations = ["eu-central-1b", "eu-central-1c"]
+    }
+  }
+
+  assert {
+    condition     = aws_subnet.private[0].availability_zone == "eu-central-1b" && aws_subnet.private[1].availability_zone == "eu-central-1c" && aws_subnet.public[0].availability_zone == "eu-central-1b" && aws_subnet.public[1].availability_zone == "eu-central-1c"
+    error_message = "The subnets must be in zones that offer the instance type."
+  }
+}
+
+run "instance_type_offered_in_fewer_than_two_zones_is_rejected" {
+  command = plan
+
+  override_data {
+    target = data.aws_ec2_instance_type_offerings.this
+    values = {
+      locations = ["eu-central-1a"]
+    }
+  }
+
+  expect_failures = [aws_autoscaling_group.web]
+}
+
+# U-16
+run "create_for_ami_check" {
+  command = apply
+
+  override_data {
+    target = data.aws_ami.al2023
+    values = {
+      id = "ami-0123456789abcdef0"
+    }
+  }
+}
+
+run "new_ami_does_not_change_the_launch_template" {
+  command = plan
+
+  override_data {
+    target = data.aws_ami.al2023
+    values = {
+      id = "ami-0fedcba9876543210"
+    }
+  }
+
+  assert {
+    condition     = aws_launch_template.web.image_id != "ami-0fedcba9876543210"
+    error_message = "A newer AMI must not change the launch template, which would replace all instances."
+  }
+}
+
+# U-17
+run "flow_log_role_is_scoped_to_this_account" {
+  command = plan
+
+  assert {
+    condition = (
+      jsondecode(aws_iam_role.flow_logs.assume_role_policy).Statement[0].Condition.StringEquals["aws:SourceAccount"] == "123456789012" &&
+      can(regex("^arn:aws:ec2:eu-central-1:123456789012:vpc-flow-log/\\*$", jsondecode(aws_iam_role.flow_logs.assume_role_policy).Statement[0].Condition.ArnLike["aws:SourceArn"]))
+    )
+    error_message = "The flow log role may only be assumed for flow logs of this account (confused deputy protection)."
   }
 }
